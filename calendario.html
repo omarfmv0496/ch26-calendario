@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Verificar día laborable o fin de semana</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="./styles.js
+"></script>
+    <style>
+        body {
+          background-color: blanchedalmond;
+          margin-left: 20px;
+        }
+        
+      </style>
+</head>
+<body>
+	<div class="container">
+		<h1 class="my-4">Verificar día laborable o fin de semana</h1>
+		<div class="row">
+			<div class="col-md-4">
+				<div class="form-group">
+					<label for="day">Día:</label>
+					<input type="number" class="form-control" id="day" min="1" max="31" required>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="form-group">
+					<label for="month">Mes:</label>
+					<input type="number" class="form-control" id="month" min="1" max="12" required>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="form-group">
+					<label for="year">Año:</label>
+					<input type="number" class="form-control" id="year" min="1900" max="2100" required>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<button type="submit" class="btn btn-primary" id="verificar">Verificar</button>
+			</div>
+		</div>
+		<div class="row mt-4">
+			<div class="col-md-12" id="resultado"></div>
+		</div>
+	</div>
+
+	<script>
+		const verificar = document.querySelector('#verificar');
+		const resultado = document.querySelector('#resultado');
+
+		verificar.addEventListener('click', () => {
+			const dia = parseInt(document.querySelector('#day').value);
+			const mes = parseInt(document.querySelector('#month').value) - 1; // El mes comienza en 0 (enero)
+			const anio = parseInt(document.querySelector('#year').value);
+
+			let maximoDia = 31;
+			if (mes == 1) { // Febrero
+				maximoDia = 28;
+				if (anio % 4 == 0 && (anio % 100 != 0 || anio % 400 == 0)) { // Año bisiesto
+					maximoDia = 29;
+				}
+			} else if ([3, 5, 8, 10].includes(mes)) { // Meses con 30 días
+				maximoDia = 30;
+			}
+
+			if (dia > maximoDia) {
+				resultado.innerHTML = `<div class="alert alert-danger">El mes ${mes + 1} en el año ${anio} tiene máximo ${maximoDia} días.</div>`;
+				return;
+			}
+
+			const fecha = new Date(anio, mes, dia);
+			const diaSemana = fecha.getDay();
+
+			let mensaje = `El ${dia}/${mes + 1}/${anio} es `;
+			switch (diaSemana) {
+				case 0:
+					mensaje += 'fin de semana';
+					break;
+				case 1:
+					mensaje += 'lunes';
+					break;
+				case 2:
+					mensaje += 'martes';
+					break;
+				case 3:
+                    mensaje += `miercoles`;
+                    break;
+                case 4: 
+                    mensaje += `jueves`
+                    break;
+                case 5:
+                    mensaje += `viernes`
+                    break;
+                case 6: 
+					mensaje += 'fin de semana';
+					break;
+				default:
+					mensaje += 'día laborable';
+			}
+
+			resultado.innerHTML = `<div class="alert alert-success">${mensaje}.</div>`;
+        });
+	</script>
+</body>
+</html>
